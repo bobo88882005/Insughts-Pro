@@ -4,25 +4,16 @@ import {
 
 
 
-function extractUsername(
-  value: string
-): string | null {
 
 
-  const match =
-    value.match(
-      /instagram\.com\/([^/"?]+)/i
-    );
+function normalizeUsername(
+  username: string
+){
 
-
-  if(match){
-
-    return match[1];
-
-  }
-
-
-  return null;
+  return username
+    .trim()
+    .replace("@", "")
+    .toLowerCase();
 
 }
 
@@ -32,13 +23,69 @@ function extractUsername(
 
 
 
+function createProfileUrl(
+  username:string
+){
+
+  return `https://www.instagram.com/${username}/`;
+
+}
+
+
+
+
+
+
+
+function uniqueUsers(
+  users: InstagramUser[]
+){
+
+  const map =
+    new Map<string, InstagramUser>();
+
+
+
+  users.forEach(
+
+    user => {
+
+      map.set(
+
+        user.username.toLowerCase(),
+
+        user
+
+      );
+
+    }
+
+  );
+
+
+
+  return Array.from(
+    map.values()
+  );
+
+}
+
+
+
+
+
+
+
+
 export async function parseInstagramZip(
   file: File
-){
+): Promise<InstagramUser[]> {
+
 
 
   const text =
     await file.text();
+
 
 
 
@@ -47,69 +94,60 @@ export async function parseInstagramZip(
 
 
 
-  const links =
-    text.match(
-      /https?:\/\/(www\.)?instagram\.com\/[^"'<> ]+/gi
-    ) || [];
+
+  const regex =
+    /instagram\.com\/([a-zA-Z0-9._]+)/gi;
 
 
 
 
-  links.forEach(
 
-    link => {
-
-
-      const username =
-        extractUsername(
-          link
-        );
+  let match;
 
 
 
-      if(username){
+  while(
+    (match = regex.exec(text)) !== null
+  ){
 
 
-        users.push({
-
-          username,
-
-          profileUrl:
-            `https://instagram.com/${username}`
-
-        });
+    const username =
+      normalizeUsername(
+        match[1]
+      );
 
 
-      }
+
+    if(
+      username &&
+      !username.includes("accounts")
+    ){
+
+
+      users.push({
+
+        username,
+
+        profileUrl:
+          createProfileUrl(
+            username
+          )
+
+      });
 
 
     }
 
+
+  }
+
+
+
+
+
+
+  return uniqueUsers(
+    users
   );
-
-
-
-
-  const unique =
-    Array.from(
-
-      new Map(
-
-        users.map(
-          user => [
-            user.username,
-            user
-          ]
-        )
-
-      ).values()
-
-    );
-
-
-
-
-  return unique;
-
 
 }
