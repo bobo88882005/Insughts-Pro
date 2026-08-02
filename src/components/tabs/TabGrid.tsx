@@ -7,16 +7,10 @@ import {
 
 
 export type TabType =
-
   | "followers"
-
   | "following"
-
   | "notFollowingBack"
-
   | "pending";
-
-
 
 
 
@@ -28,16 +22,15 @@ interface Props {
     tab: TabType
   ) => void;
 
-
   counts: {
 
-    followers:number;
+    followers: number;
 
-    following:number;
+    following: number;
 
-    notFollowingBack:number;
+    notFollowingBack: number;
 
-    pending:number;
+    pending: number;
 
   };
 
@@ -45,44 +38,37 @@ interface Props {
 
 
 
-
-
 const tabs = [
 
   {
-    id:"followers" as TabType,
-    label:"Followers",
-    icon:Users,
-    color:"from-pink-500 to-purple-600"
+    id: "followers" as TabType,
+    label: "Followers",
+    icon: Users,
+    gradient: "from-pink-500 via-red-500 to-orange-400"
   },
 
-
   {
-    id:"following" as TabType,
-    label:"Following",
-    icon:UserCheck,
-    color:"from-purple-500 to-indigo-600"
+    id: "following" as TabType,
+    label: "Following",
+    icon: UserCheck,
+    gradient: "from-purple-500 to-indigo-500"
   },
 
-
   {
-    id:"notFollowingBack" as TabType,
-    label:"Non ricambiano",
-    icon:UserMinus,
-    color:"from-orange-500 to-red-600"
+    id: "notFollowingBack" as TabType,
+    label: "Non ricambiano",
+    icon: UserMinus,
+    gradient: "from-orange-500 to-red-500"
   },
 
-
   {
-    id:"pending" as TabType,
-    label:"Pending",
-    icon:Clock,
-    color:"from-blue-500 to-cyan-500"
+    id: "pending" as TabType,
+    label: "Pending",
+    icon: Clock,
+    gradient: "from-blue-500 to-cyan-400"
   }
 
 ];
-
-
 
 
 
@@ -96,36 +82,32 @@ export default function TabGrid({
 
   counts
 
-}:Props){
+}: Props) {
 
 
 
+  function getCount(
+    id: TabType
+  ) {
 
 
-  function countFor(
-    id:TabType
-  ){
+    switch(id) {
 
+      case "followers":
+        return counts.followers;
 
-    if(id==="followers")
-      return counts.followers;
+      case "following":
+        return counts.following;
 
+      case "notFollowingBack":
+        return counts.notFollowingBack;
 
-    if(id==="following")
-      return counts.following;
+      case "pending":
+        return counts.pending;
 
-
-    if(id==="notFollowingBack")
-      return counts.notFollowingBack;
-
-
-    return counts.pending;
-
+    }
 
   }
-
-
-
 
 
 
@@ -138,12 +120,11 @@ export default function TabGrid({
       className="
         grid
         grid-cols-2
-        gap-3
-        mt-6
+        gap-4
+        mt-8
       "
 
     >
-
 
       {
         tabs.map(
@@ -156,9 +137,7 @@ export default function TabGrid({
 
 
             const selected =
-              active===tab.id;
-
-
+              active === tab.id;
 
 
 
@@ -171,42 +150,39 @@ export default function TabGrid({
                 }
 
                 onClick={
-                  ()=>onChange(tab.id)
+                  () => onChange(tab.id)
                 }
 
-                className={
-
-                  selected
-
-                  ?
-
-                  `
-                  rounded-3xl
+                className={`
+                  relative
+                  overflow-hidden
+                  rounded-[28px]
                   p-5
                   text-left
-                  bg-gradient-to-br
-                  ${tab.color}
-                  shadow-xl
-                  scale-[1.02]
                   transition-all
                   duration-300
-                  `
+                  active:scale-95
+                  ${
+                    selected
 
-                  :
+                    ? `
+                      bg-gradient-to-br
+                      ${tab.gradient}
+                      shadow-2xl
+                      scale-[1.03]
+                    `
 
-                  `
-                  rounded-3xl
-                  p-5
-                  text-left
-                  bg-white/5
-                  border
-                  border-white/10
-                  hover:bg-white/10
-                  transition-all
-                  duration-300
-                  `
+                    :
 
-                }
+                    `
+                      bg-white/5
+                      border
+                      border-white/10
+                      backdrop-blur-xl
+                      hover:bg-white/10
+                    `
+                  }
+                `}
 
               >
 
@@ -215,6 +191,8 @@ export default function TabGrid({
 
                   size={24}
 
+                  strokeWidth={2}
+
                 />
 
 
@@ -222,9 +200,10 @@ export default function TabGrid({
                 <div
 
                   className="
-                    mt-5
-                    text-xs
-                    opacity-80
+                    mt-6
+                    text-sm
+                    font-medium
+                    opacity-90
                   "
 
                 >
@@ -235,19 +214,18 @@ export default function TabGrid({
 
 
 
-
                 <div
 
                   className="
+                    mt-1
                     text-3xl
                     font-bold
-                    mt-1
                   "
 
                 >
 
                   {
-                    countFor(
+                    getCount(
                       tab.id
                     )
                   }
@@ -255,8 +233,26 @@ export default function TabGrid({
                 </div>
 
 
-              </button>
 
+                {
+                  selected &&
+
+                  <div
+
+                    className="
+                      absolute
+                      inset-0
+                      bg-white/10
+                      opacity-30
+                      pointer-events-none
+                    "
+
+                  />
+
+                }
+
+
+              </button>
 
             );
 
@@ -269,7 +265,6 @@ export default function TabGrid({
 
 
     </div>
-
 
   );
 
