@@ -24,44 +24,27 @@ export interface InstagramData {
 
 
 
-
-function createUsers(
-  usernames: string[]
-): InstagramUser[] {
-
-  return Array.from(
-    new Set(usernames)
-  )
-  .map(
-
-    username => ({
-
-      username
-
-    } as InstagramUser)
-
-  );
-
-}
-
-
-
-
-
-
-
-function extractHtmlUsers(
+function extractInstagramUsers(
   html: string
 ): string[] {
 
 
-  const users =
-    new Set<string>();
+  const users = new Set<string>();
+
+
+  /*
+    Instagram HTML export format:
+
+    <a href="https://www.instagram.com/username">
+      username
+    </a>
+
+  */
 
 
 
-  const profileRegex =
-    /instagram\.com\/([^/"?]+)/gi;
+  const regex =
+    /<a\s+href="https:\/\/www\.instagram\.com\/([^"\/?]+)"[^>]*>.*?<\/a>/gis;
 
 
 
@@ -70,42 +53,22 @@ function extractHtmlUsers(
 
 
   while(
-    (match = profileRegex.exec(html)) !== null
-  ){
-
-    if(match[1]){
-
-      users.add(
-        match[1]
-      );
-
-    }
-
-  }
-
-
-
-
-
-  const anchorRegex =
-    /<a[^>]*>(.*?)<\/a>/gi;
-
-
-
-  while(
-    (match = anchorRegex.exec(html)) !== null
+    (match = regex.exec(html)) !== null
   ){
 
     const username =
       match[1]
-      .replace(/<[^>]+>/g,"")
       .trim();
 
 
 
     if(
       username &&
-      !username.includes(" ")
+      ![
+        "accounts",
+        "explore",
+        "about"
+      ].includes(username)
     ){
 
       users.add(username);
@@ -116,7 +79,6 @@ function extractHtmlUsers(
 
 
 
-
   return Array.from(users);
 
 }
@@ -128,161 +90,17 @@ function extractHtmlUsers(
 
 
 
-function extractJsonUsers(
-  data:any
-): string[] {
+function toInstagramUsers(
+  list:string[]
+):InstagramUser[]{
 
 
-  const users =
-    new Set<string>();
-
-
-
-
-
-  function scan(
-    value:any
-  ){
-
-
-    if(
-      !value
-    )
-      return;
-
-
-
-
-    if(
-      Array.isArray(value)
-    ){
-
-      value.forEach(scan);
-
-      return;
-
-    }
-
-
-
-
-
-    if(
-      typeof value === "object"
-    ){
-
-
-      if(
-        Array.isArray(
-          value.string_list_data
-        )
-      ){
-
-        value.string_list_data.forEach(
-          (item:any)=>{
-
-            if(item.value){
-
-              users.add(
-                item.value
-              );
-
-            }
-
-          }
-        );
-
-      }
-
-
-
-
-      Object.values(value)
-      .forEach(scan);
-
-
-    }
-
-
-  }
-
-
-
-
-
-  scan(data);
-
-
-
-  return Array.from(users);
-
-}
-
-
-
-
-
-
-
-
-function isFollowersFile(
-  path:string
-):boolean {
-
-
-  const file =
-    path.toLowerCase();
-
-
-
-  return (
-
-    file.includes("followers_") ||
-
-    file.endsWith(
-      "followers.html"
-    ) ||
-
-    file.endsWith(
-      "followers.json"
-    )
-
+  return list.map(
+    username => ({
+      username
+    })
   );
 
-}
-
-
-
-
-
-
-
-
-function isFollowingFile(
-  path:string
-):boolean {
-
-
-  const file =
-    path.toLowerCase();
-
-
-
-  return (
-
-    (
-      file.includes("following")
-      ||
-      file.includes("following.html")
-      ||
-      file.includes("following.json")
-    )
-
-    &&
-
-    !file.includes("followers")
-
-  );
 
 }
 
@@ -295,8 +113,7 @@ function isFollowingFile(
 
 export async function parseInstagramZip(
   file: File
-): Promise<InstagramData>{
-
+):Promise<InstagramData>{
 
 
   const zip =
@@ -304,10 +121,9 @@ export async function parseInstagramZip(
 
 
 
+  let followers:string[] = [];
 
-  const followers:string[] = [];
-
-  const following:string[] = [];
+  let following:string[] = [];
 
 
 
@@ -315,92 +131,47 @@ export async function parseInstagramZip(
 
 
   for(
-    const path of Object.keys(zip.files)
+    const filename of Object.keys(zip.files)
   ){
 
 
-    const lower =
-      path.toLowerCase();
-
+    const name =
+      filename.toLowerCase();
 
 
 
     if(
-      !(
-        lower.endsWith(".html")
-        ||
-        lower.endsWith(".json")
-      )
-    ){
-
+      !name.endsWith(".html")
+    )
       continue;
 
-    }
 
 
 
-
-
-
-    let users:string[] = [];
-
-
-
-
-
-    const content =
-      await zip.files[path]
+    const html =
+      await zip.files[filename]
       .async("string");
 
 
 
 
 
-    if(
-      lower.endsWith(".html")
-    ){
-
-      users =
-        extractHtmlUsers(
-          content
-        );
-
-
-    }
-    else {
-
-
-      try {
-
-        users =
-          extractJsonUsers(
-            JSON.parse(content)
-          );
-
-
-      }
-      catch {
-
-        continue;
-
-      }
-
-
-    }
-
-
+    const users =
+      extractInstagramUsers(html);
 
 
 
 
 
     if(
-      isFollowersFile(path)
+      name.includes("followers")
     ){
 
-      followers.push(
-        ...users
-      );
+      followers =
+        [
+          ...followers,
+          ...users
+        ];
 
     }
 
@@ -408,18 +179,17 @@ export async function parseInstagramZip(
 
 
 
-
-
-    else if(
-      isFollowingFile(path)
+    if(
+      name.includes("following")
     ){
 
-      following.push(
-        ...users
-      );
+      following =
+        [
+          ...following,
+          ...users
+        ];
 
     }
-
 
 
   }
@@ -430,19 +200,18 @@ export async function parseInstagramZip(
 
 
 
-
   return {
 
     followers:
-      createUsers(
-        followers
+      toInstagramUsers(
+        Array.from(new Set(followers))
       ),
 
 
 
     following:
-      createUsers(
-        following
+      toInstagramUsers(
+        Array.from(new Set(following))
       ),
 
 
@@ -450,9 +219,7 @@ export async function parseInstagramZip(
     pendingRequests: [],
 
 
-
     receivedRequests: [],
-
 
 
     recentlyUnfollowed: []
