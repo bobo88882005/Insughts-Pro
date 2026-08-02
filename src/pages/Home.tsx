@@ -5,6 +5,11 @@ import {
 
 
 import {
+  Upload
+} from "lucide-react";
+
+
+import {
   useInstagramAnalyzer
 } from "../hooks/useInstagramAnalyzer";
 
@@ -13,7 +18,10 @@ import InsightsHeader
 from "../components/layout/InsightsHeader";
 
 
-import TabGrid
+import TabGrid,
+{
+  TabType
+}
 from "../components/tabs/TabGrid";
 
 
@@ -26,11 +34,6 @@ from "../components/activity/ActivitySection";
 
 
 
-type TabType =
-  | "followers"
-  | "following"
-  | "notFollowingBack"
-  | "pending";
 
 
 
@@ -39,19 +42,17 @@ type TabType =
 export default function Home(){
 
 
+
   const inputRef =
     useRef<HTMLInputElement>(null);
 
 
 
+
   const {
-
     analysis,
-
     loading,
-
     error,
-
     uploadZip
 
   } = useInstagramAnalyzer();
@@ -59,16 +60,18 @@ export default function Home(){
 
 
 
+
   const [activeTab,setActiveTab] =
-    useState<TabType>("followers");
+    useState<TabType>(
+      "followers"
+    );
 
 
 
 
 
 
-
-  function openFile(){
+  function openUpload(){
 
 
     inputRef.current?.click();
@@ -82,9 +85,12 @@ export default function Home(){
 
 
 
+
   async function handleFile(
-    event: React.ChangeEvent<HTMLInputElement>
+    event:
+      React.ChangeEvent<HTMLInputElement>
   ){
+
 
 
     const file =
@@ -94,7 +100,9 @@ export default function Home(){
 
     if(file){
 
-      await uploadZip(file);
+      await uploadZip(
+        file
+      );
 
     }
 
@@ -106,7 +114,10 @@ export default function Home(){
 
 
 
-  function currentUsers(){
+
+
+  function getUsers(){
+
 
 
     if(!analysis)
@@ -114,7 +125,9 @@ export default function Home(){
 
 
 
+
     switch(activeTab){
+
 
 
       case "followers":
@@ -141,6 +154,10 @@ export default function Home(){
 
 
 
+      default:
+
+        return [];
+
     }
 
 
@@ -152,7 +169,10 @@ export default function Home(){
 
 
 
+
   return (
+
+
 
     <main
 
@@ -160,16 +180,34 @@ export default function Home(){
         min-h-screen
         bg-black
         text-white
-        px-4
+        px-5
         pb-10
+        max-w-xl
+        mx-auto
       "
 
     >
 
 
+
+
+      <InsightsHeader
+
+        onUpload={
+          openUpload
+        }
+
+      />
+
+
+
+
+
       <input
 
-        ref={inputRef}
+        ref={
+          inputRef
+        }
 
         type="file"
 
@@ -177,7 +215,9 @@ export default function Home(){
 
         hidden
 
-        onChange={handleFile}
+        onChange={
+          handleFile
+        }
 
       />
 
@@ -185,11 +225,93 @@ export default function Home(){
 
 
 
-      <InsightsHeader
 
-        onUpload={openFile}
+      {
+        !analysis &&
 
-      />
+        <button
+
+          onClick={
+            openUpload
+          }
+
+          className="
+            mt-10
+            w-full
+            rounded-3xl
+            py-5
+            bg-gradient-to-r
+            from-pink-500
+            to-purple-600
+            font-semibold
+            flex
+            items-center
+            justify-center
+            gap-3
+          "
+
+        >
+
+          <Upload size={22}/>
+
+          Carica export Instagram
+
+        </button>
+
+      }
+
+
+
+
+
+
+
+
+      {
+        loading &&
+
+        <div
+
+          className="
+            mt-8
+            text-center
+            text-gray-400
+          "
+
+        >
+
+          Analisi in corso...
+
+        </div>
+
+      }
+
+
+
+
+
+
+      {
+        error &&
+
+        <div
+
+          className="
+            mt-5
+            rounded-2xl
+            bg-red-500/20
+            p-4
+            text-sm
+          "
+
+        >
+
+          {error}
+
+        </div>
+
+      }
+
 
 
 
@@ -205,34 +327,36 @@ export default function Home(){
 
           <TabGrid
 
-            active={activeTab}
-
-            onChange={setActiveTab}
-
-            counts={
-
-              {
-
-                followers:
-                  analysis.followersCount,
-
-
-                following:
-                  analysis.followingCount,
-
-
-                notFollowingBack:
-                  analysis.notFollowingBackCount,
-
-
-                pending:
-                  analysis.pendingRequests.length
-
-              }
-
+            active={
+              activeTab
             }
 
+            onChange={
+              setActiveTab
+            }
+
+            counts={{
+
+              followers:
+                analysis.followersCount,
+
+
+              following:
+                analysis.followingCount,
+
+
+              notFollowingBack:
+                analysis.notFollowingBackCount,
+
+
+              pending:
+                analysis.pendingRequests.length
+
+
+            }}
+
           />
+
 
 
 
@@ -241,10 +365,12 @@ export default function Home(){
           <UserList
 
             users={
-              currentUsers()
+              getUsers()
             }
 
           />
+
+
 
 
 
@@ -256,11 +382,9 @@ export default function Home(){
               analysis.inactiveCount
             }
 
-
             received={
               analysis.receivedRequests.length
             }
-
 
             unfollowed={
               analysis.recentlyUnfollowed.length
@@ -269,90 +393,15 @@ export default function Home(){
           />
 
 
+
         </>
 
       }
 
 
 
-
-
-
-
-      {
-        !analysis &&
-
-        <div
-
-          className="
-            mt-16
-            text-center
-            text-gray-500
-            text-sm
-          "
-
-        >
-
-          Carica il tuo archivio Instagram
-
-        </div>
-
-      }
-
-
-
-
-
-
-
-      {
-        loading &&
-
-        <p
-
-          className="
-            mt-5
-            text-center
-            text-sm
-            text-gray-400
-          "
-
-        >
-
-          Analisi in corso...
-
-        </p>
-
-      }
-
-
-
-
-
-
-      {
-        error &&
-
-        <p
-
-          className="
-            mt-5
-            text-center
-            text-sm
-            text-red-400
-          "
-
-        >
-
-          {error}
-
-        </p>
-
-      }
-
-
-
     </main>
+
 
   );
 
