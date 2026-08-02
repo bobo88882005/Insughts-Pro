@@ -17,13 +17,16 @@ import {
 
 
 
-function createEmptyAnalysis(
+
+function buildAnalysis(
   data: ParsedInstagramData
 ): InstagramAnalysis {
 
 
+
   const followers =
     data.followers;
+
 
 
   const following =
@@ -31,12 +34,14 @@ function createEmptyAnalysis(
 
 
 
-  const followerNames =
+
+  const followerSet =
     new Set(
 
       followers.map(
 
         user =>
+
           user.username.toLowerCase()
 
       )
@@ -45,17 +50,21 @@ function createEmptyAnalysis(
 
 
 
-  const followingNames =
+
+  const followingSet =
     new Set(
 
       following.map(
 
         user =>
+
           user.username.toLowerCase()
 
       )
 
     );
+
+
 
 
 
@@ -64,13 +73,15 @@ function createEmptyAnalysis(
 
       user =>
 
-        !followerNames.has(
+        !followerSet.has(
 
           user.username.toLowerCase()
 
         )
 
     );
+
+
 
 
 
@@ -79,13 +90,15 @@ function createEmptyAnalysis(
 
       user =>
 
-        !followingNames.has(
+        !followingSet.has(
 
           user.username.toLowerCase()
 
         )
 
     );
+
+
 
 
 
@@ -94,13 +107,14 @@ function createEmptyAnalysis(
 
       user =>
 
-        followerNames.has(
+        followerSet.has(
 
           user.username.toLowerCase()
 
         )
 
     );
+
 
 
 
@@ -130,8 +144,10 @@ function createEmptyAnalysis(
       data.pendingRequests,
 
 
+
     receivedRequests:
       data.receivedRequests,
+
 
 
     recentlyUnfollowed:
@@ -143,8 +159,10 @@ function createEmptyAnalysis(
       [],
 
 
+
     excludedUsers:
       [],
+
 
 
 
@@ -152,36 +170,45 @@ function createEmptyAnalysis(
       followers.length,
 
 
+
     followingCount:
       following.length,
+
 
 
     originalFollowingCount:
       following.length,
 
 
+
     excludedCount:
       0,
+
 
 
     inactiveCount:
       0,
 
 
+
     reciprocalCount:
       reciprocal.length,
+
 
 
     notFollowingBackCount:
       notFollowingBack.length,
 
 
+
     youDontFollowBackCount:
       youDontFollowBack.length
+
 
   };
 
 }
+
 
 
 
@@ -217,8 +244,9 @@ export function useInstagramAnalyzer(){
 
 
 
+
   async function uploadZip(
-    file: File
+    file:File
   ){
 
 
@@ -234,7 +262,7 @@ export function useInstagramAnalyzer(){
 
 
 
-      const users =
+      const parsed =
         await parseInstagramZip(
           file
         );
@@ -242,27 +270,33 @@ export function useInstagramAnalyzer(){
 
 
 
-      const data: ParsedInstagramData = {
+
+      const data:ParsedInstagramData = {
 
 
         followers:
-          users,
+          parsed.followers,
+
 
 
         following:
-          [],
+          parsed.following,
+
 
 
         pendingRequests:
-          [],
+          parsed.pendingRequests,
+
 
 
         receivedRequests:
-          [],
+          parsed.receivedRequests,
+
 
 
         recentlyUnfollowed:
-          []
+          parsed.recentlyUnfollowed
+
 
       };
 
@@ -272,7 +306,7 @@ export function useInstagramAnalyzer(){
 
       setAnalysis(
 
-        createEmptyAnalysis(
+        buildAnalysis(
           data
         )
 
@@ -294,9 +328,8 @@ export function useInstagramAnalyzer(){
 
 
       setError(
-        "Errore durante l'analisi del file Instagram"
+        "Impossibile leggere l'archivio Instagram"
       );
-
 
 
     }
