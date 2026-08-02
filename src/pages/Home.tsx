@@ -3,21 +3,17 @@ import {
   useState
 } from "react";
 
-
 import {
   Upload,
   Sparkles
 } from "lucide-react";
 
-
 import {
   useInstagramAnalyzer
 } from "../hooks/useInstagramAnalyzer";
 
-
 import InsightsHeader
 from "../components/layout/InsightsHeader";
-
 
 import TabGrid,
 {
@@ -25,17 +21,11 @@ import TabGrid,
 }
 from "../components/tabs/TabGrid";
 
-
 import UserList
 from "../components/users/UserList";
 
-
 import ActivitySection
 from "../components/activity/ActivitySection";
-
-
-
-
 
 
 
@@ -57,8 +47,6 @@ export default function Home(){
 
 
 
-
-
   const [activeTab,setActiveTab] =
     useState<TabType>(
       "followers"
@@ -75,8 +63,6 @@ export default function Home(){
 
 
 
-
-
   function openUpload(){
 
     inputRef.current?.click();
@@ -87,20 +73,15 @@ export default function Home(){
 
 
 
-
-
   async function processFile(
     file?: File
   ){
 
-
     setFileError("");
-
 
 
     if(!file)
       return;
-
 
 
     if(
@@ -116,13 +97,9 @@ export default function Home(){
     }
 
 
-
     await uploadZip(file);
 
-
   }
-
-
 
 
 
@@ -133,16 +110,11 @@ export default function Home(){
     React.ChangeEvent<HTMLInputElement>
   ){
 
-
     await processFile(
       event.target.files?.[0]
     );
 
-
   }
-
-
-
 
 
 
@@ -153,22 +125,15 @@ export default function Home(){
     React.DragEvent<HTMLDivElement>
   ){
 
-
     event.preventDefault();
 
-
     setDropActive(false);
-
 
     await processFile(
       event.dataTransfer.files?.[0]
     );
 
-
   }
-
-
-
 
 
 
@@ -176,46 +141,30 @@ export default function Home(){
 
   function currentUsers(){
 
-
     if(!analysis)
       return [];
 
 
-
     switch(activeTab){
 
-
       case "followers":
-
         return analysis.followers;
 
-
       case "following":
-
         return analysis.following;
 
-
       case "notFollowingBack":
-
         return analysis.notFollowingBack;
 
-
       case "pending":
-
         return analysis.pendingRequests;
 
-
       default:
-
         return [];
 
     }
 
-
   }
-
-
-
 
 
 
@@ -243,20 +192,16 @@ export default function Home(){
 
 
 
-
-
-
-
   return (
 
     <main
 
       className="
         min-h-screen
-        max-w-xl
+        max-w-7xl
         mx-auto
-        px-5
-        pb-12
+        px-6
+        py-8
       "
 
     >
@@ -297,9 +242,6 @@ export default function Home(){
 
 
 
-
-
-
       {
         !analysis &&
 
@@ -315,22 +257,37 @@ export default function Home(){
             }
           }
 
+
           onDragLeave={
-            () => setDropActive(false)
+            () =>
+              setDropActive(false)
           }
+
 
           onDrop={
             handleDrop
           }
 
+
           className={`
+
             mt-14
-            rounded-[32px]
+
+            max-w-xl
+            mx-auto
+
+            rounded-[36px]
+
             border
-            p-8
+
+            p-10
+
             text-center
+
             backdrop-blur-xl
+
             transition
+
             ${
               dropActive
 
@@ -341,7 +298,9 @@ export default function Home(){
               :
 
               "bg-white/5 border-white/10"
+
             }
+
           `}
 
         >
@@ -351,8 +310,8 @@ export default function Home(){
 
             className="
               mx-auto
-              w-20
-              h-20
+              w-24
+              h-24
               rounded-full
               bg-gradient-to-br
               from-pink-500
@@ -365,19 +324,17 @@ export default function Home(){
 
           >
 
-            <Sparkles size={36}/>
+            <Sparkles size={42}/>
 
           </div>
-
-
 
 
 
           <h2
 
             className="
-              mt-6
-              text-2xl
+              mt-7
+              text-3xl
               font-bold
             "
 
@@ -389,25 +346,20 @@ export default function Home(){
 
 
 
-
-
           <p
 
             className="
               mt-3
-              text-sm
               text-gray-400
             "
 
           >
 
-            Trascina qui il tuo export ZIP
-            oppure selezionalo manualmente.
+            Carica il tuo export ZIP
+            e scopri follower,
+            follow back e attività.
 
           </p>
-
-
-
 
 
 
@@ -418,29 +370,30 @@ export default function Home(){
               openUpload
             }
 
+
             className="
-              mt-7
+              mt-8
               w-full
               rounded-3xl
-              py-4
+              py-5
               bg-gradient-to-r
               from-pink-500
               to-purple-600
-              font-semibold
+              font-bold
               flex
-              items-center
               justify-center
-              gap-2
+              items-center
+              gap-3
             "
 
           >
 
-            <Upload size={20}/>
+            <Upload size={22}/>
 
             Importa Export
 
-          </button>
 
+          </button>
 
 
 
@@ -454,21 +407,15 @@ export default function Home(){
 
 
 
-
       {
         fileError &&
 
-        <div
-
-          className="
-            mt-5
-            rounded-3xl
-            bg-red-500/20
-            p-4
-            text-sm
-          "
-
-        >
+        <div className="
+          mt-6
+          rounded-3xl
+          bg-red-500/20
+          p-4
+        ">
 
           {fileError}
 
@@ -481,20 +428,14 @@ export default function Home(){
 
 
 
-
-
       {
         loading &&
 
-        <div
-
-          className="
-            mt-8
-            text-center
-            text-gray-400
-          "
-
-        >
+        <div className="
+          mt-8
+          text-center
+          text-gray-400
+        ">
 
           Analisi in corso...
 
@@ -508,20 +449,15 @@ export default function Home(){
 
 
 
-
       {
         error &&
 
-        <div
-
-          className="
-            mt-6
-            rounded-3xl
-            bg-red-500/20
-            p-4
-          "
-
-        >
+        <div className="
+          mt-6
+          rounded-3xl
+          bg-red-500/20
+          p-4
+        ">
 
           {error}
 
@@ -539,169 +475,186 @@ export default function Home(){
       {
         analysis &&
 
-        <>
+        <div
+
+          className="
+            mt-10
+            grid
+            lg:grid-cols-3
+            gap-6
+          "
+
+        >
 
 
-          <section
+
+          <div
 
             className="
-              mt-8
-              grid
-              grid-cols-3
-              gap-3
+              lg:col-span-1
             "
 
           >
 
-            <div className="
-              rounded-3xl
-              bg-white/5
-              border
-              border-white/10
-              p-4
-            ">
 
-              <div className="text-2xl font-bold">
+            <section
 
-                {analysis.followersCount}
+              className="
+                grid
+                grid-cols-3
+                lg:grid-cols-1
+                gap-4
+              "
 
-              </div>
+            >
 
-              <div className="text-xs text-gray-400">
+              <div className="
+                rounded-3xl
+                bg-white/5
+                border
+                border-white/10
+                p-5
+              ">
 
-                Followers
+                <b className="text-3xl">
+                  {analysis.followersCount}
+                </b>
 
-              </div>
-
-            </div>
-
-
-
-
-
-            <div className="
-              rounded-3xl
-              bg-white/5
-              border
-              border-white/10
-              p-4
-            ">
-
-              <div className="text-2xl font-bold">
-
-                {analysis.followingCount}
+                <p className="text-gray-400 text-sm">
+                  Followers
+                </p>
 
               </div>
 
-              <div className="text-xs text-gray-400">
-
-                Following
-
-              </div>
-
-            </div>
 
 
+              <div className="
+                rounded-3xl
+                bg-white/5
+                border
+                border-white/10
+                p-5
+              ">
 
+                <b className="text-3xl">
+                  {analysis.followingCount}
+                </b>
 
-
-            <div className="
-              rounded-3xl
-              bg-white/5
-              border
-              border-white/10
-              p-4
-            ">
-
-              <div className="text-2xl font-bold">
-
-                {followBack}%
+                <p className="text-gray-400 text-sm">
+                  Following
+                </p>
 
               </div>
 
-              <div className="text-xs text-gray-400">
 
-                Follow back
+
+              <div className="
+                rounded-3xl
+                bg-gradient-to-br
+                from-pink-500
+                to-purple-600
+                p-5
+              ">
+
+                <b className="text-3xl">
+                  {followBack}%
+                </b>
+
+                <p className="text-sm">
+                  Follow back
+                </p>
 
               </div>
 
-            </div>
 
-
-          </section>
-
+            </section>
 
 
 
 
+            <TabGrid
 
-          <TabGrid
+              active={
+                activeTab
+              }
 
-            active={
-              activeTab
-            }
-
-            onChange={
-              setActiveTab
-            }
-
-            counts={{
-
-              followers:
-                analysis.followersCount,
-
-              following:
-                analysis.followingCount,
-
-              notFollowingBack:
-                analysis.notFollowingBackCount,
-
-              pending:
-                analysis.pendingRequests.length
-
-            }}
-
-          />
+              onChange={
+                setActiveTab
+              }
 
 
+              counts={{
+
+                followers:
+                  analysis.followersCount,
+
+                following:
+                  analysis.followingCount,
+
+                notFollowingBack:
+                  analysis.notFollowingBackCount,
+
+                pending:
+                  analysis.pendingRequests.length
+
+              }}
+
+            />
 
 
-
-
-          <UserList
-
-            users={
-              currentUsers()
-            }
-
-          />
+          </div>
 
 
 
 
 
 
-          <ActivitySection
 
-            inactive={
-              analysis.inactiveCount
-            }
+          <div
 
-            received={
-              analysis.receivedRequests.length
-            }
+            className="
+              lg:col-span-2
+            "
 
-            unfollowed={
-              analysis.recentlyUnfollowed.length
-            }
+          >
 
-          />
+            <UserList
+
+              users={
+                currentUsers()
+              }
+
+            />
 
 
 
-        </>
+            <ActivitySection
+
+              inactive={
+                analysis.inactiveCount
+              }
+
+              received={
+                analysis.receivedRequests.length
+              }
+
+              unfollowed={
+                analysis.recentlyUnfollowed.length
+              }
+
+            />
+
+
+          </div>
+
+
+
+
+
+        </div>
 
       }
+
 
 
     </main>
