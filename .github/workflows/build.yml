@@ -30,8 +30,10 @@ jobs:
 
 
       - name: Install dependencies
+        working-directory: Insights-Pro
         run: npm install
 
 
       - name: Build project
+        working-directory: Insights-Pro
         run: npm run build
