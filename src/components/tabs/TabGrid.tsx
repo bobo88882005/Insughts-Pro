@@ -1,263 +1,99 @@
-import {
-  Users,
-  UserCheck,
-  UserMinus,
-  Clock
-} from "lucide-react";
+import { Users, UserCheck, UserMinus, Clock } from "lucide-react";
 
-
-interface TabItem {
-
-  id:
-    | "followers"
-    | "following"
-    | "notFollowingBack"
-    | "pending";
-
-  label:string;
-
-  count:number;
-
-}
-
-
+export type TabType =
+  | "followers"
+  | "following"
+  | "notFollowingBack"
+  | "pending";
 
 interface Props {
-
-  active:
-    | "followers"
-    | "following"
-    | "notFollowingBack"
-    | "pending";
-
-  onChange:(
-    id:
-      | "followers"
-      | "following"
-      | "notFollowingBack"
-      | "pending"
-  )=>void;
-
-
-  counts:{
-
-    followers:number;
-
-    following:number;
-
-    notFollowingBack:number;
-
-    pending:number;
-
+  active: TabType;
+  onChange: (tab: TabType) => void;
+  counts: {
+    followers: number;
+    following: number;
+    notFollowingBack: number;
+    pending: number;
   };
-
 }
 
-
-
+const tabs = [
+  {
+    id: "followers",
+    label: "Followers",
+    icon: Users,
+    color:
+      "from-pink-500 via-fuchsia-500 to-purple-500",
+  },
+  {
+    id: "following",
+    label: "Following",
+    icon: UserCheck,
+    color:
+      "from-violet-500 to-indigo-500",
+  },
+  {
+    id: "notFollowingBack",
+    label: "Non ricambiano",
+    icon: UserMinus,
+    color:
+      "from-orange-500 to-red-500",
+  },
+  {
+    id: "pending",
+    label: "Pending",
+    icon: Clock,
+    color:
+      "from-sky-500 to-cyan-500",
+  },
+] satisfies {
+  id: TabType;
+  label: string;
+  icon: typeof Users;
+  color: string;
+}[];
 
 export default function TabGrid({
-
   active,
-
   onChange,
-
-  counts
-
-}:Props){
-
-
-
-  const tabs:TabItem[] = [
-
-    {
-
-      id:"followers",
-
-      label:"Followers",
-
-      count:
-        counts.followers
-
-    },
-
-
-    {
-
-      id:"following",
-
-      label:"Following",
-
-      count:
-        counts.following
-
-    },
-
-
-    {
-
-      id:"notFollowingBack",
-
-      label:"Non ricambiano",
-
-      count:
-        counts.notFollowingBack
-
-    },
-
-
-    {
-
-      id:"pending",
-
-      label:"Pending",
-
-      count:
-        counts.pending
-
-    }
-
-  ];
-
-
-
-
-
-
-  function icon(id:TabItem["id"]){
-
-
-    if(id==="followers")
-      return <Users size={20}/>;
-
-
-    if(id==="following")
-      return <UserCheck size={20}/>;
-
-
-    if(id==="notFollowingBack")
-      return <UserMinus size={20}/>;
-
-
-    return <Clock size={20}/>;
-
-  }
-
-
-
-
-
+  counts,
+}: Props) {
   return (
+    <div className="grid grid-cols-2 gap-3 mt-6">
+      {tabs.map((tab) => {
+        const Icon = tab.icon;
 
-    <div
-      className="
-        grid
-        grid-cols-2
-        gap-3
-        mt-5
-      "
-    >
+        const value =
+          tab.id === "followers"
+            ? counts.followers
+            : tab.id === "following"
+            ? counts.following
+            : tab.id === "notFollowingBack"
+            ? counts.notFollowingBack
+            : counts.pending;
 
-
-      {
-        tabs.map(tab => (
-
-
+        return (
           <button
-
             key={tab.id}
-
-            onClick={() =>
-              onChange(tab.id)
-            }
-
-
+            onClick={() => onChange(tab.id)}
             className={
-
-              active===tab.id
-
-              ?
-
-              "
-              rounded-3xl
-              p-4
-              text-left
-              bg-gradient-to-br
-              from-pink-500
-              via-purple-500
-              to-orange-400
-              shadow-lg
-              transition
-              active:scale-95
-              "
-
-              :
-
-              "
-              rounded-3xl
-              p-4
-              text-left
-              bg-white/5
-              border
-              border-white/10
-              transition
-              active:scale-95
-              "
-
+              active === tab.id
+                ? `rounded-3xl p-5 bg-gradient-to-br ${tab.color} text-white shadow-xl transition-all duration-200 scale-[0.98]`
+                : "rounded-3xl p-5 bg-white/5 border border-white/10 text-white transition-all duration-200 hover:bg-white/10"
             }
-
           >
+            <Icon size={22} />
 
-
-            <div
-              className="
-                mb-4
-              "
-            >
-
-              {icon(tab.id)}
-
-            </div>
-
-
-
-
-            <div
-              className="
-                font-semibold
-                text-sm
-              "
-            >
-
+            <div className="mt-6 text-sm opacity-90">
               {tab.label}
-
             </div>
 
-
-
-            <div
-              className="
-                text-xs
-                opacity-70
-                mt-1
-              "
-            >
-
-              {tab.count}
-
+            <div className="text-2xl font-bold mt-1">
+              {value}
             </div>
-
-
-
           </button>
-
-
-        ))
-      }
-
-
+        );
+      })}
     </div>
-
   );
-
 }
