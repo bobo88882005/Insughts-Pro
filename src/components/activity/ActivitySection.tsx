@@ -1,12 +1,14 @@
 interface Props {
 
-  inactive:number;
+  inactive: number;
 
-  received:number;
+  received: number;
 
-  unfollowed:number;
+  unfollowed: number;
 
 }
+
+
 
 
 
@@ -18,25 +20,25 @@ export default function ActivitySection({
 
   unfollowed
 
-}:Props){
+}: Props){
 
 
 
   const items = [
 
     {
-      label:"Possibili inattivi",
-      value:inactive
+      label: "Possibili inattivi",
+      value: inactive
     },
 
     {
-      label:"Richieste ricevute",
-      value:received
+      label: "Richieste ricevute",
+      value: received
     },
 
     {
-      label:"Recently unfollowed",
-      value:unfollowed
+      label: "Recently unfollowed",
+      value: unfollowed
     }
 
   ];
@@ -50,7 +52,7 @@ export default function ActivitySection({
     <section
 
       className="
-        mt-5
+        mt-6
         rounded-3xl
         bg-white/[0.03]
         border
@@ -61,12 +63,13 @@ export default function ActivitySection({
     >
 
 
+
       <h2
 
         className="
           text-xs
           uppercase
-          tracking-wider
+          tracking-widest
           text-gray-500
           mb-3
         "
@@ -90,10 +93,10 @@ export default function ActivitySection({
 
       >
 
-
         {
-          items.map(item => (
+          items.map(
 
+            item =>
 
             <div
 
@@ -103,13 +106,12 @@ export default function ActivitySection({
 
               className="
                 flex
-                justify-between
                 items-center
+                justify-between
                 py-3
               "
 
             >
-
 
               <span
 
@@ -127,12 +129,12 @@ export default function ActivitySection({
 
 
 
+
               <span
 
                 className="
                   text-sm
                   font-semibold
-                  text-white
                 "
 
               >
@@ -142,16 +144,15 @@ export default function ActivitySection({
               </span>
 
 
+
             </div>
 
+          )
 
-          ))
         }
 
 
-
       </div>
-
 
 
     </section>
