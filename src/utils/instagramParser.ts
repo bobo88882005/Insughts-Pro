@@ -4,11 +4,16 @@ import {
 
 
 
+import JSZip from "jszip";
+
+
+
 
 
 function normalizeUsername(
   username: string
-){
+): string {
+
 
   return username
     .trim()
@@ -23,11 +28,87 @@ function normalizeUsername(
 
 
 
-function createProfileUrl(
-  username:string
-){
+function createUser(
+  username: string
+): InstagramUser {
 
-  return `https://www.instagram.com/${username}/`;
+
+  return {
+
+    username,
+
+    profileUrl:
+      `https://www.instagram.com/${username}/`
+
+  };
+
+}
+
+
+
+
+
+
+
+function extractUsersFromJson(
+  data: any
+): InstagramUser[] {
+
+
+
+  const users: InstagramUser[] = [];
+
+
+
+
+
+  if(
+    Array.isArray(data)
+  ){
+
+
+    data.forEach(
+
+      item => {
+
+
+        const value =
+          item?.string_list_data?.[0]
+            ?.value;
+
+
+
+        if(value){
+
+
+          users.push(
+
+            createUser(
+
+              normalizeUsername(
+                value
+              )
+
+            )
+
+          );
+
+
+        }
+
+
+      }
+
+    );
+
+
+  }
+
+
+
+
+
+  return users;
 
 }
 
@@ -41,31 +122,25 @@ function uniqueUsers(
   users: InstagramUser[]
 ){
 
-  const map =
-    new Map<string, InstagramUser>();
-
-
-
-  users.forEach(
-
-    user => {
-
-      map.set(
-
-        user.username.toLowerCase(),
-
-        user
-
-      );
-
-    }
-
-  );
-
-
 
   return Array.from(
-    map.values()
+
+    new Map(
+
+      users.map(
+
+        user => [
+
+          user.username,
+
+          user
+
+        ]
+
+      )
+
+    ).values()
+
   );
 
 }
@@ -76,16 +151,15 @@ function uniqueUsers(
 
 
 
-
 export async function parseInstagramZip(
   file: File
-): Promise<InstagramUser[]> {
+){
 
 
-
-  const text =
-    await file.text();
-
+  const zip =
+    await JSZip.loadAsync(
+      file
+    );
 
 
 
@@ -95,51 +169,65 @@ export async function parseInstagramZip(
 
 
 
-  const regex =
-    /instagram\.com\/([a-zA-Z0-9._]+)/gi;
 
-
-
-
-
-  let match;
-
-
-
-  while(
-    (match = regex.exec(text)) !== null
+  for(
+    const path of Object.keys(zip.files)
   ){
 
 
-    const username =
-      normalizeUsername(
-        match[1]
-      );
+    const name =
+      path.toLowerCase();
+
 
 
 
     if(
-      username &&
-      !username.includes("accounts")
+      name.endsWith(".json")
     ){
 
 
-      users.push({
 
-        username,
+      const content =
+        await zip.files[path]
+          .async("text");
 
-        profileUrl:
-          createProfileUrl(
-            username
+
+
+      try {
+
+
+        const json =
+          JSON.parse(
+            content
+          );
+
+
+
+        users.push(
+
+          ...extractUsersFromJson(
+            json
           )
 
-      });
+        );
+
+
+
+      }
+
+      catch{
+
+
+        continue;
+
+      }
 
 
     }
 
 
   }
+
 
 
 
