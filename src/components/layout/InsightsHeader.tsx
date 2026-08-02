@@ -4,6 +4,8 @@ import {
 
 
 
+
+
 interface Props {
 
   onUpload: () => void;
@@ -14,21 +16,24 @@ interface Props {
 
 
 
+
+
+
 export default function InsightsHeader({
 
   onUpload
 
-}: Props){
+}:Props){
 
 
 
   return (
 
+
     <header
 
       className="
         pt-8
-        pb-4
         flex
         items-center
         justify-between
@@ -37,15 +42,24 @@ export default function InsightsHeader({
     >
 
 
+
+
+
       <div>
 
 
         <h1
 
           className="
-            text-3xl
+            text-4xl
             font-bold
             tracking-tight
+            bg-gradient-to-r
+            from-pink-500
+            via-purple-500
+            to-orange-400
+            bg-clip-text
+            text-transparent
           "
 
         >
@@ -55,12 +69,14 @@ export default function InsightsHeader({
         </h1>
 
 
+
+
         <p
 
           className="
-            text-sm
-            text-gray-500
             mt-1
+            text-sm
+            text-gray-400
           "
 
         >
@@ -70,7 +86,10 @@ export default function InsightsHeader({
         </p>
 
 
+
       </div>
+
+
 
 
 
@@ -78,13 +97,16 @@ export default function InsightsHeader({
 
       <button
 
-        onClick={onUpload}
+        onClick={
+          onUpload
+        }
 
         className="
           w-12
           h-12
           rounded-full
           bg-white/10
+          backdrop-blur-xl
           border
           border-white/10
           flex
@@ -92,9 +114,11 @@ export default function InsightsHeader({
           justify-center
           hover:bg-white/20
           transition
+          active:scale-95
         "
 
       >
+
 
         <Upload
 
@@ -102,12 +126,15 @@ export default function InsightsHeader({
 
         />
 
+
       </button>
 
 
 
 
+
     </header>
+
 
   );
 
