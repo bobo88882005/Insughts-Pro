@@ -10,12 +10,106 @@ import {
 
 
 
+
+
+function createEmptyAnalysis(
+  data: ParsedInstagramData
+): InstagramAnalysis {
+
+
+  return {
+
+    followers:
+      data.followers,
+
+
+    following:
+      data.following,
+
+
+    notFollowingBack:
+      [],
+
+
+    youDontFollowBack:
+      [],
+
+
+    reciprocal:
+      [],
+
+
+    pendingRequests:
+      data.pendingRequests,
+
+
+    receivedRequests:
+      data.receivedRequests,
+
+
+    recentlyUnfollowed:
+      data.recentlyUnfollowed,
+
+
+    possibleInactive:
+      [],
+
+
+    excludedUsers:
+      [],
+
+
+
+    followersCount:
+      data.followers.length,
+
+
+    followingCount:
+      data.following.length,
+
+
+    originalFollowingCount:
+      data.following.length,
+
+
+    excludedCount:
+      0,
+
+
+    inactiveCount:
+      0,
+
+
+    reciprocalCount:
+      0,
+
+
+    notFollowingBackCount:
+      0,
+
+
+    youDontFollowBackCount:
+      0
+
+  };
+
+}
+
+
+
+
+
+
+
+
 export function useInstagramAnalyzer(){
 
 
 
   const [analysis,setAnalysis] =
-    useState<InstagramAnalysis | null>(null);
+    useState<InstagramAnalysis | null>(
+      null
+    );
 
 
 
@@ -25,7 +119,11 @@ export function useInstagramAnalyzer(){
 
 
   const [error,setError] =
-    useState<string | null>(null);
+    useState<string | null>(
+      null
+    );
+
+
 
 
 
@@ -42,34 +140,32 @@ export function useInstagramAnalyzer(){
 
 
 
+
     try {
 
 
+
       console.log(
-        "Analisi file:",
+        "Instagram ZIP:",
         file.name
       );
 
 
 
-      /*
-        Qui verrà collegato
-        il parser Instagram ZIP.
-
-        Per ora mantiene
-        la struttura pronta.
-      */
-
-
       const emptyData: ParsedInstagramData = {
+
 
         followers: [],
 
+
         following: [],
+
 
         pendingRequests: [],
 
+
         receivedRequests: [],
+
 
         recentlyUnfollowed: []
 
@@ -77,94 +173,21 @@ export function useInstagramAnalyzer(){
 
 
 
-      const emptyAnalysis =
-        {
-
-          followers:
-            emptyData.followers,
-
-
-          following:
-            emptyData.following,
-
-
-          notFollowingBack:
-            [],
-
-
-          youDontFollowBack:
-            [],
-
-
-          reciprocal:
-            [],
-
-
-          pendingRequests:
-            emptyData.pendingRequests,
-
-
-          receivedRequests:
-            emptyData.receivedRequests,
-
-
-          recentlyUnfollowed:
-            emptyData.recentlyUnfollowed,
-
-
-          possibleInactive:
-            [],
-
-
-          excludedUsers:
-            [],
-
-
-
-          followersCount:
-            0,
-
-
-          followingCount:
-            0,
-
-
-          originalFollowingCount:
-            0,
-
-
-          excludedCount:
-            0,
-
-
-          inactiveCount:
-            0,
-
-
-          reciprocalCount:
-            0,
-
-
-          notFollowingBackCount:
-            0,
-
-
-          youDontFollowBackCount:
-            0
-
-        };
-
-
 
       setAnalysis(
-        emptyAnalysis
+
+        createEmptyAnalysis(
+          emptyData
+        )
+
       );
+
 
 
     }
 
 
-    catch(err){
+    catch {
 
 
       setError(
@@ -175,7 +198,7 @@ export function useInstagramAnalyzer(){
     }
 
 
-    finally{
+    finally {
 
 
       setLoading(false);
@@ -185,6 +208,7 @@ export function useInstagramAnalyzer(){
 
 
   }
+
 
 
 
