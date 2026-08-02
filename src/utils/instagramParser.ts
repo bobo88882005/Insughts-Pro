@@ -51,8 +51,8 @@ function extractInstagramUsers(
 
     const username =
       match[1]
-      .trim()
-      .toLowerCase();
+        .trim()
+        .toLowerCase();
 
 
 
@@ -102,9 +102,6 @@ function toInstagramUsers(
 
       profileUrl:
         `https://www.instagram.com/${username}/`,
-
-      followedAt:
-        null,
 
       source
 
