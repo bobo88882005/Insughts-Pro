@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 
 
-
 export type TabType =
 
   | "followers"
@@ -32,13 +31,13 @@ interface Props {
 
   counts: {
 
-    followers: number;
+    followers:number;
 
-    following: number;
+    following:number;
 
-    notFollowingBack: number;
+    notFollowingBack:number;
 
-    pending: number;
+    pending:number;
 
   };
 
@@ -48,46 +47,40 @@ interface Props {
 
 
 
-
 const tabs = [
 
   {
-    id: "followers" as TabType,
-    label: "Followers",
-    icon: Users,
-    gradient:
-      "from-pink-500 to-purple-500"
+    id:"followers" as TabType,
+    label:"Followers",
+    icon:Users,
+    color:"from-pink-500 to-purple-600"
   },
 
 
   {
-    id: "following" as TabType,
-    label: "Following",
-    icon: UserCheck,
-    gradient:
-      "from-violet-500 to-indigo-500"
+    id:"following" as TabType,
+    label:"Following",
+    icon:UserCheck,
+    color:"from-purple-500 to-indigo-600"
   },
 
 
   {
-    id: "notFollowingBack" as TabType,
-    label: "Non ricambiano",
-    icon: UserMinus,
-    gradient:
-      "from-orange-500 to-red-500"
+    id:"notFollowingBack" as TabType,
+    label:"Non ricambiano",
+    icon:UserMinus,
+    color:"from-orange-500 to-red-600"
   },
 
 
   {
-    id: "pending" as TabType,
-    label: "Pending",
-    icon: Clock,
-    gradient:
-      "from-blue-500 to-cyan-500"
+    id:"pending" as TabType,
+    label:"Pending",
+    icon:Clock,
+    color:"from-blue-500 to-cyan-500"
   }
 
 ];
-
 
 
 
@@ -103,41 +96,35 @@ export default function TabGrid({
 
   counts
 
-}: Props){
+}:Props){
 
 
 
-  function getCount(
-    id: TabType
+
+
+  function countFor(
+    id:TabType
   ){
 
 
-    switch(id){
+    if(id==="followers")
+      return counts.followers;
 
 
-      case "followers":
-
-        return counts.followers;
-
-
-      case "following":
-
-        return counts.following;
+    if(id==="following")
+      return counts.following;
 
 
-      case "notFollowingBack":
-
-        return counts.notFollowingBack;
-
-
-      case "pending":
-
-        return counts.pending;
+    if(id==="notFollowingBack")
+      return counts.notFollowingBack;
 
 
-    }
+    return counts.pending;
+
 
   }
+
+
 
 
 
@@ -152,7 +139,7 @@ export default function TabGrid({
         grid
         grid-cols-2
         gap-3
-        mt-5
+        mt-6
       "
 
     >
@@ -169,7 +156,8 @@ export default function TabGrid({
 
 
             const selected =
-              active === tab.id;
+              active===tab.id;
+
 
 
 
@@ -183,12 +171,8 @@ export default function TabGrid({
                 }
 
                 onClick={
-                  () =>
-                    onChange(
-                      tab.id
-                    )
+                  ()=>onChange(tab.id)
                 }
-
 
                 className={
 
@@ -201,10 +185,11 @@ export default function TabGrid({
                   p-5
                   text-left
                   bg-gradient-to-br
-                  ${tab.gradient}
-                  shadow-lg
-                  scale-[0.98]
-                  transition
+                  ${tab.color}
+                  shadow-xl
+                  scale-[1.02]
+                  transition-all
+                  duration-300
                   `
 
                   :
@@ -213,11 +198,12 @@ export default function TabGrid({
                   rounded-3xl
                   p-5
                   text-left
-                  bg-white/[0.04]
+                  bg-white/5
                   border
                   border-white/10
-                  transition
-                  hover:bg-white/[0.08]
+                  hover:bg-white/10
+                  transition-all
+                  duration-300
                   `
 
                 }
@@ -227,7 +213,7 @@ export default function TabGrid({
 
                 <Icon
 
-                  size={22}
+                  size={24}
 
                 />
 
@@ -249,10 +235,11 @@ export default function TabGrid({
 
 
 
+
                 <div
 
                   className="
-                    text-2xl
+                    text-3xl
                     font-bold
                     mt-1
                   "
@@ -260,7 +247,7 @@ export default function TabGrid({
                 >
 
                   {
-                    getCount(
+                    countFor(
                       tab.id
                     )
                   }
@@ -268,11 +255,11 @@ export default function TabGrid({
                 </div>
 
 
-
               </button>
 
 
             );
+
 
           }
 
@@ -282,6 +269,7 @@ export default function TabGrid({
 
 
     </div>
+
 
   );
 
