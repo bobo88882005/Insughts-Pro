@@ -1,99 +1,288 @@
-import { Users, UserCheck, UserMinus, Clock } from "lucide-react";
+import {
+  Users,
+  UserCheck,
+  UserMinus,
+  Clock
+} from "lucide-react";
+
+
 
 export type TabType =
+
   | "followers"
+
   | "following"
+
   | "notFollowingBack"
+
   | "pending";
 
+
+
+
+
 interface Props {
+
   active: TabType;
-  onChange: (tab: TabType) => void;
+
+  onChange: (
+    tab: TabType
+  ) => void;
+
+
   counts: {
+
     followers: number;
+
     following: number;
+
     notFollowingBack: number;
+
     pending: number;
+
   };
+
 }
 
+
+
+
+
+
 const tabs = [
+
   {
-    id: "followers",
+    id: "followers" as TabType,
     label: "Followers",
     icon: Users,
-    color:
-      "from-pink-500 via-fuchsia-500 to-purple-500",
+    gradient:
+      "from-pink-500 to-purple-500"
   },
+
+
   {
-    id: "following",
+    id: "following" as TabType,
     label: "Following",
     icon: UserCheck,
-    color:
-      "from-violet-500 to-indigo-500",
+    gradient:
+      "from-violet-500 to-indigo-500"
   },
+
+
   {
-    id: "notFollowingBack",
+    id: "notFollowingBack" as TabType,
     label: "Non ricambiano",
     icon: UserMinus,
-    color:
-      "from-orange-500 to-red-500",
+    gradient:
+      "from-orange-500 to-red-500"
   },
+
+
   {
-    id: "pending",
+    id: "pending" as TabType,
     label: "Pending",
     icon: Clock,
-    color:
-      "from-sky-500 to-cyan-500",
-  },
-] satisfies {
-  id: TabType;
-  label: string;
-  icon: typeof Users;
-  color: string;
-}[];
+    gradient:
+      "from-blue-500 to-cyan-500"
+  }
+
+];
+
+
+
+
+
+
+
 
 export default function TabGrid({
+
   active,
+
   onChange,
-  counts,
-}: Props) {
+
+  counts
+
+}: Props){
+
+
+
+  function getCount(
+    id: TabType
+  ){
+
+
+    switch(id){
+
+
+      case "followers":
+
+        return counts.followers;
+
+
+      case "following":
+
+        return counts.following;
+
+
+      case "notFollowingBack":
+
+        return counts.notFollowingBack;
+
+
+      case "pending":
+
+        return counts.pending;
+
+
+    }
+
+  }
+
+
+
+
+
+
   return (
-    <div className="grid grid-cols-2 gap-3 mt-6">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
 
-        const value =
-          tab.id === "followers"
-            ? counts.followers
-            : tab.id === "following"
-            ? counts.following
-            : tab.id === "notFollowingBack"
-            ? counts.notFollowingBack
-            : counts.pending;
+    <div
 
-        return (
-          <button
-            key={tab.id}
-            onClick={() => onChange(tab.id)}
-            className={
-              active === tab.id
-                ? `rounded-3xl p-5 bg-gradient-to-br ${tab.color} text-white shadow-xl transition-all duration-200 scale-[0.98]`
-                : "rounded-3xl p-5 bg-white/5 border border-white/10 text-white transition-all duration-200 hover:bg-white/10"
-            }
-          >
-            <Icon size={22} />
+      className="
+        grid
+        grid-cols-2
+        gap-3
+        mt-5
+      "
 
-            <div className="mt-6 text-sm opacity-90">
-              {tab.label}
-            </div>
+    >
 
-            <div className="text-2xl font-bold mt-1">
-              {value}
-            </div>
-          </button>
-        );
-      })}
+
+      {
+        tabs.map(
+
+          tab => {
+
+
+            const Icon =
+              tab.icon;
+
+
+            const selected =
+              active === tab.id;
+
+
+
+
+            return (
+
+              <button
+
+                key={
+                  tab.id
+                }
+
+                onClick={
+                  () =>
+                    onChange(
+                      tab.id
+                    )
+                }
+
+
+                className={
+
+                  selected
+
+                  ?
+
+                  `
+                  rounded-3xl
+                  p-5
+                  text-left
+                  bg-gradient-to-br
+                  ${tab.gradient}
+                  shadow-lg
+                  scale-[0.98]
+                  transition
+                  `
+
+                  :
+
+                  `
+                  rounded-3xl
+                  p-5
+                  text-left
+                  bg-white/[0.04]
+                  border
+                  border-white/10
+                  transition
+                  hover:bg-white/[0.08]
+                  `
+
+                }
+
+              >
+
+
+                <Icon
+
+                  size={22}
+
+                />
+
+
+
+                <div
+
+                  className="
+                    mt-5
+                    text-xs
+                    opacity-80
+                  "
+
+                >
+
+                  {tab.label}
+
+                </div>
+
+
+
+                <div
+
+                  className="
+                    text-2xl
+                    font-bold
+                    mt-1
+                  "
+
+                >
+
+                  {
+                    getCount(
+                      tab.id
+                    )
+                  }
+
+                </div>
+
+
+
+              </button>
+
+
+            );
+
+          }
+
+        )
+
+      }
+
+
     </div>
+
   );
+
 }
