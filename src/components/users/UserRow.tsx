@@ -1,4 +1,9 @@
 import {
+  ExternalLink
+} from "lucide-react";
+
+
+import {
   InstagramUser
 } from "../../types/instagram";
 
@@ -12,11 +17,13 @@ interface Props {
 
 
 
+
+
 export default function UserRow({
 
   user
 
-}:Props){
+}: Props){
 
 
 
@@ -24,23 +31,24 @@ export default function UserRow({
 
     <a
 
-      href={
-        user.profileUrl
-      }
+      href={user.profileUrl}
 
       target="_blank"
 
       rel="noreferrer"
 
-
       className="
         flex
         items-center
         justify-between
+        rounded-2xl
         px-4
         py-3
+        bg-white/[0.04]
+        border
+        border-white/[0.06]
+        hover:bg-white/[0.08]
         transition
-        active:bg-white/10
       "
 
     >
@@ -50,9 +58,8 @@ export default function UserRow({
       <span
 
         className="
-          text-[15px]
+          text-sm
           font-medium
-          text-white
         "
 
       >
@@ -64,18 +71,16 @@ export default function UserRow({
 
 
 
-      <span
+
+      <ExternalLink
+
+        size={16}
 
         className="
           text-gray-500
-          text-xl
         "
 
-      >
-
-        ›
-
-      </span>
+      />
 
 
 
