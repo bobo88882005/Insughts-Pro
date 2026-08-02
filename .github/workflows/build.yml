@@ -19,7 +19,7 @@ jobs:
 
     steps:
 
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
 
@@ -29,11 +29,9 @@ jobs:
           node-version: 24
 
 
-      - name: Install dependencies
-        working-directory: Insights-Pro
+      - name: Install
         run: npm install
 
 
-      - name: Build project
-        working-directory: Insights-Pro
+      - name: Build
         run: npm run build
