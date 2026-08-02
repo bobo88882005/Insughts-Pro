@@ -6,9 +6,7 @@ import {
 
 import {
   Upload,
-  Users,
-  UserRoundCheck,
-  HeartHandshake
+  Sparkles
 } from "lucide-react";
 
 
@@ -40,8 +38,8 @@ from "../components/activity/ActivitySection";
 
 
 
-export default function Home(){
 
+export default function Home(){
 
 
   const inputRef =
@@ -71,7 +69,6 @@ export default function Home(){
 
 
 
-
   function openUpload(){
 
     inputRef.current?.click();
@@ -85,7 +82,7 @@ export default function Home(){
 
   async function handleFile(
     event:
-      React.ChangeEvent<HTMLInputElement>
+    React.ChangeEvent<HTMLInputElement>
   ){
 
 
@@ -98,6 +95,7 @@ export default function Home(){
       await uploadZip(file);
 
     }
+
 
   }
 
@@ -138,11 +136,8 @@ export default function Home(){
         return analysis.pendingRequests;
 
 
-      default:
-
-        return [];
-
     }
+
 
   }
 
@@ -151,25 +146,26 @@ export default function Home(){
 
 
 
-  const followBackPercent =
 
-    analysis && analysis.followingCount > 0
+  const followBack =
+
+    analysis && analysis.followingCount
 
     ?
 
     Math.round(
 
-      (
-        analysis.reciprocalCount /
-        analysis.followingCount
-
-      ) * 100
+      analysis.reciprocalCount /
+      analysis.followingCount *
+      100
 
     )
 
     :
 
     0;
+
+
 
 
 
@@ -227,39 +223,128 @@ export default function Home(){
 
 
 
+
+
       {
         !analysis &&
 
-        <button
-
-          onClick={
-            openUpload
-          }
+        <section
 
           className="
-            mt-10
-            w-full
-            rounded-3xl
-            bg-gradient-to-r
-            from-pink-500
-            to-purple-600
-            py-5
-            font-semibold
-            flex
-            items-center
-            justify-center
-            gap-3
+            mt-14
+            rounded-[32px]
+            bg-white/5
+            border
+            border-white/10
+            backdrop-blur-xl
+            p-8
+            text-center
           "
 
         >
 
-          <Upload size={22}/>
 
-          Carica export Instagram
+          <div
 
-        </button>
+            className="
+              mx-auto
+              w-20
+              h-20
+              rounded-full
+              bg-gradient-to-br
+              from-pink-500
+              via-purple-500
+              to-orange-400
+              flex
+              items-center
+              justify-center
+            "
+
+          >
+
+            <Sparkles size={36}/>
+
+          </div>
+
+
+
+
+
+          <h2
+
+            className="
+              mt-6
+              text-2xl
+              font-bold
+            "
+
+          >
+
+            Analizza Instagram
+
+          </h2>
+
+
+
+
+
+          <p
+
+            className="
+              mt-3
+              text-sm
+              text-gray-400
+            "
+
+          >
+
+            Carica il tuo export Instagram
+            ZIP e scopri follower,
+            follow back e attività.
+
+          </p>
+
+
+
+
+
+
+          <button
+
+            onClick={
+              openUpload
+            }
+
+            className="
+              mt-7
+              w-full
+              rounded-3xl
+              py-4
+              bg-gradient-to-r
+              from-pink-500
+              to-purple-600
+              font-semibold
+              flex
+              items-center
+              justify-center
+              gap-2
+            "
+
+          >
+
+            <Upload size={20}/>
+
+            Importa Export
+
+          </button>
+
+
+
+
+        </section>
 
       }
+
 
 
 
@@ -299,10 +384,7 @@ export default function Home(){
             mt-6
             rounded-3xl
             bg-red-500/20
-            border
-            border-red-500/30
             p-4
-            text-sm
           "
 
         >
@@ -337,8 +419,6 @@ export default function Home(){
 
           >
 
-
-
             <div className="
               rounded-3xl
               bg-white/5
@@ -347,13 +427,9 @@ export default function Home(){
               p-4
             ">
 
-              <Users size={20}/>
+              <div className="text-2xl font-bold">
 
-              <div className="mt-3 text-2xl font-bold">
-
-                {
-                  analysis.followersCount
-                }
+                {analysis.followersCount}
 
               </div>
 
@@ -377,13 +453,9 @@ export default function Home(){
               p-4
             ">
 
-              <UserRoundCheck size={20}/>
+              <div className="text-2xl font-bold">
 
-              <div className="mt-3 text-2xl font-bold">
-
-                {
-                  analysis.followingCount
-                }
+                {analysis.followingCount}
 
               </div>
 
@@ -407,11 +479,9 @@ export default function Home(){
               p-4
             ">
 
-              <HeartHandshake size={20}/>
+              <div className="text-2xl font-bold">
 
-              <div className="mt-3 text-2xl font-bold">
-
-                {followBackPercent}%
+                {followBack}%
 
               </div>
 
@@ -422,7 +492,6 @@ export default function Home(){
               </div>
 
             </div>
-
 
 
           </section>
@@ -478,7 +547,6 @@ export default function Home(){
 
 
 
-
           <ActivitySection
 
             inactive={
@@ -500,7 +568,6 @@ export default function Home(){
         </>
 
       }
-
 
 
     </main>
