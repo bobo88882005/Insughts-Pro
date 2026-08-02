@@ -1,12 +1,26 @@
 import Home from "./pages/Home";
 
 
-export default function App(){
+
+export default function App() {
 
 
   return (
 
-    <Home />
+    <div
+
+      className="
+        min-h-screen
+        bg-black
+        text-white
+        antialiased
+      "
+
+    >
+
+      <Home />
+
+    </div>
 
   );
 
