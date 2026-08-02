@@ -65,6 +65,14 @@ export default function Home(){
     );
 
 
+  const [dropActive,setDropActive] =
+    useState(false);
+
+
+  const [fileError,setFileError] =
+    useState("");
+
+
 
 
 
@@ -80,24 +88,85 @@ export default function Home(){
 
 
 
+
+  async function processFile(
+    file?: File
+  ){
+
+
+    setFileError("");
+
+
+
+    if(!file)
+      return;
+
+
+
+    if(
+      !file.name.toLowerCase().endsWith(".zip")
+    ){
+
+      setFileError(
+        "Carica un file ZIP dell'export Instagram"
+      );
+
+      return;
+
+    }
+
+
+
+    await uploadZip(file);
+
+
+  }
+
+
+
+
+
+
+
   async function handleFile(
     event:
     React.ChangeEvent<HTMLInputElement>
   ){
 
 
-    const file =
-      event.target.files?.[0];
-
-
-    if(file){
-
-      await uploadZip(file);
-
-    }
+    await processFile(
+      event.target.files?.[0]
+    );
 
 
   }
+
+
+
+
+
+
+
+
+  async function handleDrop(
+    event:
+    React.DragEvent<HTMLDivElement>
+  ){
+
+
+    event.preventDefault();
+
+
+    setDropActive(false);
+
+
+    await processFile(
+      event.dataTransfer.files?.[0]
+    );
+
+
+  }
+
 
 
 
@@ -136,10 +205,15 @@ export default function Home(){
         return analysis.pendingRequests;
 
 
+      default:
+
+        return [];
+
     }
 
 
   }
+
 
 
 
@@ -225,21 +299,50 @@ export default function Home(){
 
 
 
+
       {
         !analysis &&
 
         <section
 
-          className="
+          onDragOver={
+            e => {
+
+              e.preventDefault();
+
+              setDropActive(true);
+
+            }
+          }
+
+          onDragLeave={
+            () => setDropActive(false)
+          }
+
+          onDrop={
+            handleDrop
+          }
+
+          className={`
             mt-14
             rounded-[32px]
-            bg-white/5
             border
-            border-white/10
-            backdrop-blur-xl
             p-8
             text-center
-          "
+            backdrop-blur-xl
+            transition
+            ${
+              dropActive
+
+              ?
+
+              "bg-pink-500/20 border-pink-500"
+
+              :
+
+              "bg-white/5 border-white/10"
+            }
+          `}
 
         >
 
@@ -298,11 +401,11 @@ export default function Home(){
 
           >
 
-            Carica il tuo export Instagram
-            ZIP e scopri follower,
-            follow back e attività.
+            Trascina qui il tuo export ZIP
+            oppure selezionalo manualmente.
 
           </p>
+
 
 
 
@@ -351,6 +454,35 @@ export default function Home(){
 
 
 
+
+      {
+        fileError &&
+
+        <div
+
+          className="
+            mt-5
+            rounded-3xl
+            bg-red-500/20
+            p-4
+            text-sm
+          "
+
+        >
+
+          {fileError}
+
+        </div>
+
+      }
+
+
+
+
+
+
+
+
       {
         loading &&
 
@@ -369,6 +501,8 @@ export default function Home(){
         </div>
 
       }
+
+
 
 
 
