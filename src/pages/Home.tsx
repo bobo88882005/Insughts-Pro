@@ -26,7 +26,7 @@ from "../components/activity/ActivitySection";
 
 
 
-type Tab =
+type TabType =
   | "followers"
   | "following"
   | "notFollowingBack"
@@ -39,8 +39,7 @@ type Tab =
 export default function Home(){
 
 
-
-  const fileInput =
+  const inputRef =
     useRef<HTMLInputElement>(null);
 
 
@@ -49,11 +48,11 @@ export default function Home(){
 
     analysis,
 
-    uploadZip,
-
     loading,
 
-    error
+    error,
+
+    uploadZip
 
   } = useInstagramAnalyzer();
 
@@ -61,16 +60,19 @@ export default function Home(){
 
 
   const [activeTab,setActiveTab] =
-    useState<Tab>("followers");
+    useState<TabType>("followers");
 
 
 
 
 
 
-  async function upload(){
 
-    fileInput.current?.click();
+  function openFile(){
+
+
+    inputRef.current?.click();
+
 
   }
 
@@ -78,12 +80,16 @@ export default function Home(){
 
 
 
+
+
   async function handleFile(
-    e:React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>
   ){
 
+
     const file =
-      e.target.files?.[0];
+      event.target.files?.[0];
+
 
 
     if(file){
@@ -92,6 +98,7 @@ export default function Home(){
 
     }
 
+
   }
 
 
@@ -99,8 +106,7 @@ export default function Home(){
 
 
 
-
-  function users(){
+  function currentUsers(){
 
 
     if(!analysis)
@@ -137,8 +143,8 @@ export default function Home(){
 
     }
 
-  }
 
+  }
 
 
 
@@ -152,6 +158,8 @@ export default function Home(){
 
       className="
         min-h-screen
+        bg-black
+        text-white
         px-4
         pb-10
       "
@@ -159,10 +167,9 @@ export default function Home(){
     >
 
 
-
       <input
 
-        ref={fileInput}
+        ref={inputRef}
 
         type="file"
 
@@ -180,7 +187,7 @@ export default function Home(){
 
       <InsightsHeader
 
-        onUpload={upload}
+        onUpload={openFile}
 
       />
 
@@ -193,8 +200,8 @@ export default function Home(){
       {
         analysis &&
 
-
         <>
+
 
           <TabGrid
 
@@ -231,16 +238,13 @@ export default function Home(){
 
 
 
-
           <UserList
 
             users={
-              users()
+              currentUsers()
             }
 
           />
-
-
 
 
 
@@ -252,9 +256,11 @@ export default function Home(){
               analysis.inactiveCount
             }
 
+
             received={
               analysis.receivedRequests.length
             }
+
 
             unfollowed={
               analysis.recentlyUnfollowed.length
@@ -262,10 +268,10 @@ export default function Home(){
 
           />
 
+
         </>
 
       }
-
 
 
 
@@ -279,10 +285,10 @@ export default function Home(){
         <div
 
           className="
-            mt-10
+            mt-16
             text-center
-            text-sm
             text-gray-500
+            text-sm
           "
 
         >
@@ -299,14 +305,13 @@ export default function Home(){
 
 
 
-
       {
         loading &&
 
         <p
 
           className="
-            mt-4
+            mt-5
             text-center
             text-sm
             text-gray-400
@@ -324,13 +329,14 @@ export default function Home(){
 
 
 
+
       {
         error &&
 
         <p
 
           className="
-            mt-4
+            mt-5
             text-center
             text-sm
             text-red-400
