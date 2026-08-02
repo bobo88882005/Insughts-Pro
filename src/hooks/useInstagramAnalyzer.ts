@@ -9,6 +9,11 @@ import {
 } from "../types/instagram";
 
 
+import {
+  parseInstagramZip
+} from "../utils/instagramParser";
+
+
 
 
 
@@ -17,26 +22,108 @@ function createEmptyAnalysis(
 ): InstagramAnalysis {
 
 
+  const followers =
+    data.followers;
+
+
+  const following =
+    data.following;
+
+
+
+  const followerNames =
+    new Set(
+
+      followers.map(
+
+        user =>
+          user.username.toLowerCase()
+
+      )
+
+    );
+
+
+
+  const followingNames =
+    new Set(
+
+      following.map(
+
+        user =>
+          user.username.toLowerCase()
+
+      )
+
+    );
+
+
+
+  const notFollowingBack =
+    following.filter(
+
+      user =>
+
+        !followerNames.has(
+
+          user.username.toLowerCase()
+
+        )
+
+    );
+
+
+
+  const youDontFollowBack =
+    followers.filter(
+
+      user =>
+
+        !followingNames.has(
+
+          user.username.toLowerCase()
+
+        )
+
+    );
+
+
+
+  const reciprocal =
+    following.filter(
+
+      user =>
+
+        followerNames.has(
+
+          user.username.toLowerCase()
+
+        )
+
+    );
+
+
+
+
+
+
   return {
 
-    followers:
-      data.followers,
+
+    followers,
 
 
-    following:
-      data.following,
+    following,
 
 
-    notFollowingBack:
-      [],
+    notFollowingBack,
 
 
-    youDontFollowBack:
-      [],
+    youDontFollowBack,
 
 
-    reciprocal:
-      [],
+    reciprocal,
+
 
 
     pendingRequests:
@@ -51,6 +138,7 @@ function createEmptyAnalysis(
       data.recentlyUnfollowed,
 
 
+
     possibleInactive:
       [],
 
@@ -61,15 +149,15 @@ function createEmptyAnalysis(
 
 
     followersCount:
-      data.followers.length,
+      followers.length,
 
 
     followingCount:
-      data.following.length,
+      following.length,
 
 
     originalFollowingCount:
-      data.following.length,
+      following.length,
 
 
     excludedCount:
@@ -81,15 +169,15 @@ function createEmptyAnalysis(
 
 
     reciprocalCount:
-      0,
+      reciprocal.length,
 
 
     notFollowingBackCount:
-      0,
+      notFollowingBack.length,
 
 
     youDontFollowBackCount:
-      0
+      youDontFollowBack.length
 
   };
 
@@ -134,6 +222,7 @@ export function useInstagramAnalyzer(){
   ){
 
 
+
     setLoading(true);
 
     setError(null);
@@ -145,31 +234,38 @@ export function useInstagramAnalyzer(){
 
 
 
-      console.log(
-        "Instagram ZIP:",
-        file.name
-      );
+      const users =
+        await parseInstagramZip(
+          file
+        );
 
 
 
-      const emptyData: ParsedInstagramData = {
+
+      const data: ParsedInstagramData = {
 
 
-        followers: [],
+        followers:
+          users,
 
 
-        following: [],
+        following:
+          [],
 
 
-        pendingRequests: [],
+        pendingRequests:
+          [],
 
 
-        receivedRequests: [],
+        receivedRequests:
+          [],
 
 
-        recentlyUnfollowed: []
+        recentlyUnfollowed:
+          []
 
       };
+
 
 
 
@@ -177,7 +273,7 @@ export function useInstagramAnalyzer(){
       setAnalysis(
 
         createEmptyAnalysis(
-          emptyData
+          data
         )
 
       );
@@ -187,12 +283,20 @@ export function useInstagramAnalyzer(){
     }
 
 
-    catch {
+    catch(error){
+
+
+
+      console.error(
+        error
+      );
+
 
 
       setError(
-        "Errore durante l'analisi"
+        "Errore durante l'analisi del file Instagram"
       );
+
 
 
     }
