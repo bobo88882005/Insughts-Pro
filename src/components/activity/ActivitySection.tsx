@@ -12,6 +12,7 @@ interface Props {
 
 
 
+
 export default function ActivitySection({
 
   inactive,
@@ -27,18 +28,21 @@ export default function ActivitySection({
   const items = [
 
     {
-      label: "Possibili inattivi",
-      value: inactive
+      title: "Possibili inattivi",
+      value: inactive,
+      description: "Account che interagiscono poco"
     },
 
     {
-      label: "Richieste ricevute",
-      value: received
+      title: "Richieste ricevute",
+      value: received,
+      description: "Nuove richieste follower"
     },
 
     {
-      label: "Recently unfollowed",
-      value: unfollowed
+      title: "Recently unfollowed",
+      value: unfollowed,
+      description: "Account che hanno smesso di seguirti"
     }
 
   ];
@@ -54,10 +58,11 @@ export default function ActivitySection({
       className="
         mt-6
         rounded-3xl
-        bg-white/[0.03]
+        bg-white/5
+        backdrop-blur-xl
         border
         border-white/10
-        p-4
+        p-5
       "
 
     >
@@ -67,11 +72,9 @@ export default function ActivitySection({
       <h2
 
         className="
-          text-xs
-          uppercase
-          tracking-widest
-          text-gray-500
-          mb-3
+          text-lg
+          font-semibold
+          mb-4
         "
 
       >
@@ -87,75 +90,112 @@ export default function ActivitySection({
       <div
 
         className="
-          divide-y
-          divide-white/10
+          space-y-3
         "
 
       >
 
+
+
         {
           items.map(
 
-            item =>
+            item => (
 
-            <div
+              <div
 
-              key={
-                item.label
-              }
-
-              className="
-                flex
-                items-center
-                justify-between
-                py-3
-              "
-
-            >
-
-              <span
+                key={
+                  item.title
+                }
 
                 className="
-                  text-sm
-                  text-gray-300
+                  flex
+                  items-center
+                  justify-between
+                  rounded-2xl
+                  bg-black/20
+                  p-4
+                  border
+                  border-white/5
                 "
 
               >
 
-                {item.label}
-
-              </span>
 
 
+                <div>
 
 
+                  <div
 
-              <span
+                    className="
+                      text-sm
+                      font-medium
+                    "
 
-                className="
-                  text-sm
-                  font-semibold
-                "
+                  >
 
-              >
+                    {item.title}
 
-                {item.value}
-
-              </span>
+                  </div>
 
 
 
-            </div>
+                  <div
+
+                    className="
+                      text-xs
+                      text-gray-500
+                      mt-1
+                    "
+
+                  >
+
+                    {item.description}
+
+                  </div>
+
+
+
+                </div>
+
+
+
+
+
+                <div
+
+                  className="
+                    text-2xl
+                    font-bold
+                  "
+
+                >
+
+                  {item.value}
+
+                </div>
+
+
+
+
+              </div>
+
+
+            )
 
           )
 
         }
 
 
+
       </div>
 
 
+
     </section>
+
 
   );
 
