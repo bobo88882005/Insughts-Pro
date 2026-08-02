@@ -24,22 +24,14 @@ export interface InstagramData {
 
 
 
+
+
 function extractInstagramUsers(
   html: string
 ): string[] {
 
 
   const users = new Set<string>();
-
-
-  /*
-    Instagram HTML export format:
-
-    <a href="https://www.instagram.com/username">
-      username
-    </a>
-
-  */
 
 
 
@@ -56,9 +48,11 @@ function extractInstagramUsers(
     (match = regex.exec(html)) !== null
   ){
 
+
     const username =
       match[1]
-      .trim();
+      .trim()
+      .toLowerCase();
 
 
 
@@ -75,6 +69,7 @@ function extractInstagramUsers(
 
     }
 
+
   }
 
 
@@ -90,19 +85,36 @@ function extractInstagramUsers(
 
 
 
+
 function toInstagramUsers(
-  list:string[]
+  list:string[],
+  source:
+    "followers" |
+    "following"
 ):InstagramUser[]{
 
 
   return list.map(
+
     username => ({
-      username
+
+      username,
+
+      profileUrl:
+        `https://www.instagram.com/${username}/`,
+
+      followedAt:
+        null,
+
+      source
+
     })
+
   );
 
 
 }
+
 
 
 
@@ -116,8 +128,11 @@ export async function parseInstagramZip(
 ):Promise<InstagramData>{
 
 
+
   const zip =
     await JSZip.loadAsync(file);
+
+
 
 
 
@@ -130,9 +145,11 @@ export async function parseInstagramZip(
 
 
 
+
   for(
     const filename of Object.keys(zip.files)
   ){
+
 
 
     const name =
@@ -140,10 +157,12 @@ export async function parseInstagramZip(
 
 
 
+
     if(
       !name.endsWith(".html")
     )
       continue;
+
 
 
 
@@ -163,9 +182,12 @@ export async function parseInstagramZip(
 
 
 
+
+
     if(
       name.includes("followers")
     ){
+
 
       followers =
         [
@@ -173,7 +195,10 @@ export async function parseInstagramZip(
           ...users
         ];
 
+
     }
+
+
 
 
 
@@ -183,13 +208,16 @@ export async function parseInstagramZip(
       name.includes("following")
     ){
 
+
       following =
         [
           ...following,
           ...users
         ];
 
+
     }
+
 
 
   }
@@ -200,29 +228,55 @@ export async function parseInstagramZip(
 
 
 
+
+
   return {
 
+
     followers:
+
       toInstagramUsers(
-        Array.from(new Set(followers))
+
+        Array.from(
+          new Set(followers)
+        ),
+
+        "followers"
+
       ),
+
+
 
 
 
     following:
+
       toInstagramUsers(
-        Array.from(new Set(following))
+
+        Array.from(
+          new Set(following)
+        ),
+
+        "following"
+
       ),
+
+
+
 
 
 
     pendingRequests: [],
 
 
+
     receivedRequests: [],
 
 
+
     recentlyUnfollowed: []
+
+
 
   };
 
