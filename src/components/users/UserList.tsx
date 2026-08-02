@@ -8,7 +8,8 @@ import {
 } from "../../types/instagram";
 
 
-import UserRow from "./UserRow";
+import UserRow
+from "./UserRow";
 
 
 
@@ -20,11 +21,13 @@ interface Props {
 
 
 
+
+
 export default function UserList({
 
   users
 
-}:Props){
+}: Props){
 
 
 
@@ -34,15 +37,21 @@ export default function UserList({
 
 
 
-  const filteredUsers =
+
+  const filtered =
     users.filter(
+
       user =>
+
         user.username
           .toLowerCase()
           .includes(
             search.toLowerCase()
           )
+
     );
+
+
 
 
 
@@ -54,26 +63,15 @@ export default function UserList({
 
       className="
         mt-5
-        rounded-3xl
-        overflow-hidden
-        bg-white/5
-        border
-        border-white/10
       "
 
     >
 
 
 
-      <div
+      {
+        users.length > 5 &&
 
-        className="
-          p-3
-          border-b
-          border-white/10
-        "
-
-      >
 
         <input
 
@@ -86,16 +84,13 @@ export default function UserList({
               )
           }
 
-
-          placeholder="
-            Cerca username
-          "
-
+          placeholder="Cerca utente"
 
           className="
             w-full
+            mb-3
             rounded-2xl
-            bg-black/30
+            bg-white/[0.05]
             border
             border-white/10
             px-4
@@ -107,78 +102,81 @@ export default function UserList({
 
         />
 
-
-      </div>
-
+      }
 
 
 
 
 
-      <div
 
-        className="
-          max-h-[430px]
-          overflow-y-auto
-          divide-y
-          divide-white/10
-        "
-
-      >
+      {
+        filtered.length === 0 ?
 
 
+        (
 
-        {
-          filteredUsers.length === 0
+          <div
 
-          ?
+            className="
+              text-center
+              text-sm
+              text-gray-500
+              py-10
+            "
 
-          (
+          >
 
-            <div
+            Nessun utente trovato
 
-              className="
-                py-12
-                text-center
-                text-sm
-                text-gray-500
-              "
+          </div>
 
-            >
-
-              Nessun utente
-
-            </div>
-
-          )
+        )
 
 
-          :
+        :
 
 
-          filteredUsers.map(
+        (
 
-            user =>
+          <div
 
-              <UserRow
+            className="
+              space-y-2
+              max-h-[420px]
+              overflow-y-auto
+              pr-1
+            "
 
-                key={
-                  user.username
-                }
+          >
 
-                user={
-                  user
-                }
+            {
+              filtered.map(
 
-              />
+                user =>
 
-          )
+                <UserRow
 
-        }
+                  key={
+                    user.username
+                  }
+
+                  user={
+                    user
+                  }
+
+                />
+
+              )
+
+            }
 
 
+          </div>
 
-      </div>
+        )
+
+      }
+
 
 
 
