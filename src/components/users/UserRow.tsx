@@ -9,11 +9,15 @@ import {
 
 
 
+
+
 interface Props {
 
   user: InstagramUser;
 
 }
+
+
 
 
 
@@ -31,7 +35,9 @@ export default function UserRow({
 
     <a
 
-      href={user.profileUrl}
+      href={
+        user.profileUrl
+      }
 
       target="_blank"
 
@@ -41,32 +47,98 @@ export default function UserRow({
         flex
         items-center
         justify-between
-        rounded-2xl
-        px-4
-        py-3
-        bg-white/[0.04]
-        border
-        border-white/[0.06]
-        hover:bg-white/[0.08]
+        px-5
+        py-4
+        hover:bg-white/10
         transition
+        active:scale-[0.99]
       "
 
     >
 
 
 
-      <span
+
+      <div
 
         className="
-          text-sm
-          font-medium
+          flex
+          items-center
+          gap-3
         "
 
       >
 
-        @{user.username}
 
-      </span>
+
+        <div
+
+          className="
+            w-10
+            h-10
+            rounded-full
+            bg-gradient-to-br
+            from-pink-500
+            via-purple-500
+            to-orange-400
+            flex
+            items-center
+            justify-center
+            text-sm
+            font-bold
+          "
+
+        >
+
+          {
+            user.username
+              .charAt(0)
+              .toUpperCase()
+          }
+
+        </div>
+
+
+
+
+
+        <div>
+
+
+          <div
+
+            className="
+              font-medium
+              text-sm
+            "
+
+          >
+
+            {user.username}
+
+          </div>
+
+
+          <div
+
+            className="
+              text-xs
+              text-gray-500
+            "
+
+          >
+
+            Instagram profile
+
+          </div>
+
+
+
+        </div>
+
+
+
+      </div>
 
 
 
@@ -74,13 +146,14 @@ export default function UserRow({
 
       <ExternalLink
 
-        size={16}
+        size={18}
 
         className="
-          text-gray-500
+          text-gray-400
         "
 
       />
+
 
 
 
