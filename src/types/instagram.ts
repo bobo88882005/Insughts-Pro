@@ -7,3 +7,62 @@ export interface InstagramUser {
   followedAt?: Date;
 
 }
+
+
+
+export interface ParsedInstagramData {
+
+  followers: InstagramUser[];
+
+  following: InstagramUser[];
+
+  pendingRequests: InstagramUser[];
+
+  receivedRequests: InstagramUser[];
+
+  recentlyUnfollowed: InstagramUser[];
+
+}
+
+
+
+export interface InstagramAnalysis {
+
+  followers: InstagramUser[];
+
+  following: InstagramUser[];
+
+  notFollowingBack: InstagramUser[];
+
+  youDontFollowBack: InstagramUser[];
+
+  reciprocal: InstagramUser[];
+
+  pendingRequests: InstagramUser[];
+
+  receivedRequests: InstagramUser[];
+
+  recentlyUnfollowed: InstagramUser[];
+
+  possibleInactive: InstagramUser[];
+
+  excludedUsers: InstagramUser[];
+
+
+  followersCount: number;
+
+  followingCount: number;
+
+  originalFollowingCount: number;
+
+  excludedCount: number;
+
+  inactiveCount: number;
+
+  reciprocalCount: number;
+
+  notFollowingBackCount: number;
+
+  youDontFollowBackCount: number;
+
+}
