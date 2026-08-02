@@ -5,7 +5,10 @@ import {
 
 
 import {
-  Upload
+  Upload,
+  Users,
+  UserRoundCheck,
+  HeartHandshake
 } from "lucide-react";
 
 
@@ -37,15 +40,12 @@ from "../components/activity/ActivitySection";
 
 
 
-
-
 export default function Home(){
 
 
 
   const inputRef =
     useRef<HTMLInputElement>(null);
-
 
 
 
@@ -71,15 +71,12 @@ export default function Home(){
 
 
 
-  function openUpload(){
 
+  function openUpload(){
 
     inputRef.current?.click();
 
-
   }
-
-
 
 
 
@@ -92,20 +89,15 @@ export default function Home(){
   ){
 
 
-
     const file =
       event.target.files?.[0];
 
 
-
     if(file){
 
-      await uploadZip(
-        file
-      );
+      await uploadZip(file);
 
     }
-
 
   }
 
@@ -115,9 +107,7 @@ export default function Home(){
 
 
 
-
-  function getUsers(){
-
+  function currentUsers(){
 
 
     if(!analysis)
@@ -125,9 +115,7 @@ export default function Home(){
 
 
 
-
     switch(activeTab){
-
 
 
       case "followers":
@@ -135,11 +123,9 @@ export default function Home(){
         return analysis.followers;
 
 
-
       case "following":
 
         return analysis.following;
-
 
 
       case "notFollowingBack":
@@ -147,11 +133,9 @@ export default function Home(){
         return analysis.notFollowingBack;
 
 
-
       case "pending":
 
         return analysis.pendingRequests;
-
 
 
       default:
@@ -160,9 +144,32 @@ export default function Home(){
 
     }
 
-
   }
 
+
+
+
+
+
+  const followBackPercent =
+
+    analysis && analysis.followingCount > 0
+
+    ?
+
+    Math.round(
+
+      (
+        analysis.reciprocalCount /
+        analysis.followingCount
+
+      ) * 100
+
+    )
+
+    :
+
+    0;
 
 
 
@@ -172,22 +179,17 @@ export default function Home(){
 
   return (
 
-
-
     <main
 
       className="
         min-h-screen
-        bg-black
-        text-white
-        px-5
-        pb-10
         max-w-xl
         mx-auto
+        px-5
+        pb-12
       "
 
     >
-
 
 
 
@@ -225,7 +227,6 @@ export default function Home(){
 
 
 
-
       {
         !analysis &&
 
@@ -239,10 +240,10 @@ export default function Home(){
             mt-10
             w-full
             rounded-3xl
-            py-5
             bg-gradient-to-r
             from-pink-500
             to-purple-600
+            py-5
             font-semibold
             flex
             items-center
@@ -259,8 +260,6 @@ export default function Home(){
         </button>
 
       }
-
-
 
 
 
@@ -297,9 +296,11 @@ export default function Home(){
         <div
 
           className="
-            mt-5
-            rounded-2xl
+            mt-6
+            rounded-3xl
             bg-red-500/20
+            border
+            border-red-500/30
             p-4
             text-sm
           "
@@ -325,6 +326,112 @@ export default function Home(){
         <>
 
 
+          <section
+
+            className="
+              mt-8
+              grid
+              grid-cols-3
+              gap-3
+            "
+
+          >
+
+
+
+            <div className="
+              rounded-3xl
+              bg-white/5
+              border
+              border-white/10
+              p-4
+            ">
+
+              <Users size={20}/>
+
+              <div className="mt-3 text-2xl font-bold">
+
+                {
+                  analysis.followersCount
+                }
+
+              </div>
+
+              <div className="text-xs text-gray-400">
+
+                Followers
+
+              </div>
+
+            </div>
+
+
+
+
+
+            <div className="
+              rounded-3xl
+              bg-white/5
+              border
+              border-white/10
+              p-4
+            ">
+
+              <UserRoundCheck size={20}/>
+
+              <div className="mt-3 text-2xl font-bold">
+
+                {
+                  analysis.followingCount
+                }
+
+              </div>
+
+              <div className="text-xs text-gray-400">
+
+                Following
+
+              </div>
+
+            </div>
+
+
+
+
+
+            <div className="
+              rounded-3xl
+              bg-white/5
+              border
+              border-white/10
+              p-4
+            ">
+
+              <HeartHandshake size={20}/>
+
+              <div className="mt-3 text-2xl font-bold">
+
+                {followBackPercent}%
+
+              </div>
+
+              <div className="text-xs text-gray-400">
+
+                Follow back
+
+              </div>
+
+            </div>
+
+
+
+          </section>
+
+
+
+
+
+
           <TabGrid
 
             active={
@@ -340,18 +447,14 @@ export default function Home(){
               followers:
                 analysis.followersCount,
 
-
               following:
                 analysis.followingCount,
-
 
               notFollowingBack:
                 analysis.notFollowingBackCount,
 
-
               pending:
                 analysis.pendingRequests.length
-
 
             }}
 
@@ -365,7 +468,7 @@ export default function Home(){
           <UserList
 
             users={
-              getUsers()
+              currentUsers()
             }
 
           />
@@ -401,7 +504,6 @@ export default function Home(){
 
 
     </main>
-
 
   );
 
